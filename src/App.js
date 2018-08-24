@@ -10,10 +10,10 @@ class App extends Component {
   constructor(props){
     super(props);
     this.doWork = this.doWork.bind(this);
+    this.doReadWork = this.doReadWork.bind(this);
   }
 
-  doWork(data){
-    console.log("into the working function");
+  logic(data){
     var permissionArray = [];
     _.forEach(ModuleList , function(value, key){
       if(_.has(data, key)){
@@ -24,9 +24,28 @@ class App extends Component {
         })
       }
     });
-    
-    if(_.indexOf(permissionArray , false) == -1){
+    return permissionArray;
+  }
+
+  doWork(data){
+    console.log("into the working function");
+    var permissionArray = this.logic(data);
+    if(!_.includes(permissionArray , false)){
       console.log("permitted");
+      return true;
+    }
+    else{
+      console.log("Not permitted");
+      return false;
+    }
+  }
+
+  doReadWork(data){
+    console.log("into the Read working function");
+    var permissionArray = this.logic(data);
+    
+    if(_.includes(permissionArray , true)){
+      console.log("permitted#####");
       return true;
     }
     else{
@@ -51,11 +70,35 @@ class App extends Component {
               "Entity" : ["Manage"]
               }) }>Click</button>
           </div>
+          <div>
+            Click To get OutPut Read  :  <button 
+            onClick={()=>this.doReadWork({
+              "Deshboard": ["Read"],
+              "Entity" : ["Read"],
+              "Template" : ["Read"]
+              }) }>Click</button>
+          </div>
+
             {this.doWork({
               "Deshboard": ["Read"]
               
               }) && 
           <p><h2>You aare having all the permissions....</h2></p>
+            }
+
+            {this.doReadWork({
+               "Deshboard": ["Read"],
+               "Entity" : ["Read"],
+               "Template" : ["Read"]
+              }) && 
+          <p><h2>You aare having either of this permissions....</h2></p>
+            }
+            <br></br>
+
+            {this.doReadWork({
+               "Deshboard": ["Read"],
+              }) && 
+          <p><h2>You aare having only Deshboard Read permissions....</h2></p>
             }
         </p>
       </div>
